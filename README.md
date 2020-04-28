@@ -2,7 +2,8 @@
 ```diff
 + Tag a config to remind them to stay hydrated
 ```
-Uses `reflect` so watch out
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/JoelPagliuca/conman)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/JoelPagliuca/conman)
 
 ### Quickstart
 ```go
@@ -24,3 +25,6 @@ This will set `myAppConfig.Port` to your `PORT` environment variable if it is se
 ### Coming soon
 * AWS SSM Params
 * Custom strategies
+
+
+Uses `reflect` so watch out
