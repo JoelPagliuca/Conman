@@ -8,9 +8,12 @@ const (
 
 // Cfg configuration for Conman
 type Cfg struct {
-	logInfo          bool
+	// loginfo - Log kinda interesting info
+	logInfo bool
+	// Stop the logs that are helpful
 	suppressWarnings bool
-	sourceOrder      []string
+	// Order to check for config values in
+	sourceOrder []string
 }
 
 // DefaultCfg sensible defaults

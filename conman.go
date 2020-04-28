@@ -77,8 +77,8 @@ func (cm Conman) HydrateConfig(cfg interface{}) error {
 				if sub != nil {
 					cm.inform("Setting " + fld.Name + " using " + src)
 					val.SetString(*sub)
+					break
 				}
-				break
 			}
 		}
 	}
