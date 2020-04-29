@@ -2,8 +2,9 @@
 ```diff
 + Tag a config to remind them to stay ｈｙｄｒａｔｅｄ
 ```
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/JoelPagliuca/conman?color=green)](https://github.com/JoelPagliuca/Conman/releases/latest)
+[![Godoc reference](https://godoc.org/github.com/JoelPagliuca/conman?status.svg)](http://godoc.org/github.com/JoelPagliuca/conman)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/JoelPagliuca/conman)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/JoelPagliuca/conman?color=green)](https://github.com/JoelPagliuca/Conman/releases/latest)
 ![GitHub milestone](https://img.shields.io/github/milestones/progress-percent/JoelPagliuca/conman/1?color=yellow)
 
 ### Quickstart
