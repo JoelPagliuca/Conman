@@ -18,7 +18,7 @@ type Conman struct {
 }
 
 // New ...
-func New(c Cfg) Iface {
+func New(c Cfg) (Iface, error) {
 	cm := Conman{cfg: c}
 	cm.strategies = make(map[string]Strategy)
 	cm.strategies[SourceDefault] = DefaultStrategy
@@ -26,14 +26,14 @@ func New(c Cfg) Iface {
 	// make sure the given config was safe
 	for _, ord := range c.SourceOrder {
 		if _, ok := cm.strategies[ord]; !ok {
-			cm.whinge("Value " + ord + " from SourceOrder doesn't have corresponding strategy")
+			return nil, fmt.Errorf("Value " + ord + " from SourceOrder doesn't have corresponding strategy")
 		}
 	}
 	if len(c.SourceOrder) == 0 {
 		cm.inform("Using the default ordering")
 		cm.cfg.SourceOrder = DefaultCfg.SourceOrder
 	}
-	return cm
+	return &cm, nil
 }
 
 func (cm Conman) inform(s string) {
@@ -42,18 +42,12 @@ func (cm Conman) inform(s string) {
 	}
 }
 
-func (cm Conman) whinge(s string) {
-	if !cm.cfg.SuppressWarnings {
-		log.Println("\033[1;33m", s, "\033[0m")
-	}
-}
-
 // Hydrate - populate a config object with ssm params defined by tags.
 // Looks for ssmConfig path from env var
 func (cm Conman) Hydrate(cfg interface{}) error {
 	defer func() {
 		if r := recover(); r != nil {
-			cm.whinge(fmt.Sprintf("Had a panic: %s", r))
+			cm.inform(fmt.Sprintf("Had a panic: %s", r))
 		}
 	}()
 	val := reflect.ValueOf(cfg)
@@ -68,18 +62,26 @@ func (cm Conman) Hydrate(cfg interface{}) error {
 		if !val.CanSet() {
 			continue
 		}
+		var finalError error
 		for _, src := range cm.cfg.SourceOrder {
 			tag := fld.Tag.Get(src)
 			if tag == "" {
 				continue
 			} else {
-				sub := cm.strategies[src](tag)
+				sub, err := cm.strategies[src](tag)
 				if sub != nil {
 					cm.inform("Setting " + fld.Name + " using " + src)
 					val.SetString(*sub)
+					finalError = nil
 					break
 				}
+				if err != nil {
+					finalError = fmt.Errorf("%s with tag %s: %w", fld.Name, src, err)
+				}
 			}
+		}
+		if finalError != nil {
+			return finalError
 		}
 	}
 	return nil
