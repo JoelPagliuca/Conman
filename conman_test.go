@@ -5,5 +5,5 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	New(Cfg{logInfo: true, suppressWarnings: false, sourceOrder: []string{SourceEnvironment, SourceDefault}})
+	New(Cfg{LogInfo: true, SuppressWarnings: false, SourceOrder: []string{SourceEnvironment, SourceDefault}})
 }

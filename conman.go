@@ -24,26 +24,26 @@ func New(c Cfg) Iface {
 	cm.strategies[SourceDefault] = DefaultStrategy
 	cm.strategies[SourceEnvironment] = EnvironmentStrategy
 	// make sure the given config was safe
-	for _, ord := range c.sourceOrder {
+	for _, ord := range c.SourceOrder {
 		if _, ok := cm.strategies[ord]; !ok {
-			cm.whinge("Value " + ord + " from sourceOrder doesn't have corresponding strategy")
+			cm.whinge("Value " + ord + " from SourceOrder doesn't have corresponding strategy")
 		}
 	}
-	if len(c.sourceOrder) == 0 {
+	if len(c.SourceOrder) == 0 {
 		cm.inform("Using the default ordering")
-		cm.cfg.sourceOrder = DefaultCfg.sourceOrder
+		cm.cfg.SourceOrder = DefaultCfg.SourceOrder
 	}
 	return cm
 }
 
 func (cm Conman) inform(s string) {
-	if cm.cfg.logInfo {
+	if cm.cfg.LogInfo {
 		log.Println(s)
 	}
 }
 
 func (cm Conman) whinge(s string) {
-	if !cm.cfg.suppressWarnings {
+	if !cm.cfg.SuppressWarnings {
 		log.Println("\033[1;33m", s, "\033[0m")
 	}
 }
@@ -68,7 +68,7 @@ func (cm Conman) Hydrate(cfg interface{}) error {
 		if !val.CanSet() {
 			continue
 		}
-		for _, src := range cm.cfg.sourceOrder {
+		for _, src := range cm.cfg.SourceOrder {
 			tag := fld.Tag.Get(src)
 			if tag == "" {
 				continue
