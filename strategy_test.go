@@ -11,9 +11,9 @@ func TestDefaultStrategy(t *testing.T) {
 		Token1     string `cmdefault:"default"`
 		OtherToken string
 	}
-	err := cm.HydrateConfig(&toHydrate)
+	err := cm.Hydrate(&toHydrate)
 	if err != nil {
-		t.Errorf("HydrateConfig Failed: %s", err.Error())
+		t.Errorf("Hydrate Failed: %s", err.Error())
 	}
 	if toHydrate.Token1 != "default" {
 		t.Errorf("cmdefault strategy failed %s", toHydrate.Token1)
@@ -30,9 +30,9 @@ func TestEnvironmentStrategy(t *testing.T) {
 	var toHydrate struct {
 		Token1 string `cmenv:"token1"`
 	}
-	err := cm.HydrateConfig(&toHydrate)
+	err := cm.Hydrate(&toHydrate)
 	if err != nil {
-		t.Errorf("HydrateConfig Failed: %s", err.Error())
+		t.Errorf("Hydrate Failed: %s", err.Error())
 	}
 	if toHydrate.Token1 != "token1value" {
 		t.Errorf("cmenv strategy failed, got %s", toHydrate.Token1)
@@ -44,16 +44,16 @@ func TestStrategyOrdering(t *testing.T) {
 	var toHydrate struct {
 		Token1 string `cmenv:"token1" cmdefault:"default"`
 	}
-	err := cm.HydrateConfig(&toHydrate)
+	err := cm.Hydrate(&toHydrate)
 	if err != nil {
-		t.Errorf("HydrateConfig Failed: %s", err.Error())
+		t.Errorf("Hydrate Failed: %s", err.Error())
 	}
 	if toHydrate.Token1 != "default" {
 		t.Errorf("cmdefault strategy failed, got \"%s\"", toHydrate.Token1)
 	}
 	defer os.Unsetenv("token1")
 	os.Setenv("token1", "token1value")
-	cm.HydrateConfig(&toHydrate)
+	cm.Hydrate(&toHydrate)
 	if toHydrate.Token1 != "token1value" {
 		t.Errorf("cmenv strategy failed, got \"%s\"", toHydrate.Token1)
 	}

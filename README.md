@@ -1,6 +1,6 @@
 # Conman
 ```diff
-+ Tag a config to remind them to stay hydrated
++ Tag a config to remind them to stay ｈｙｄｒａｔｅｄ
 ```
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/JoelPagliuca/conman?color=green)](https://github.com/JoelPagliuca/Conman/releases/latest)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/JoelPagliuca/conman)
@@ -18,7 +18,7 @@ var myAppConfig struct {
 func init() {
 	c := conman.DefaultCfg
 	cm := conman.New(c)
-	cm.HydrateConfig(&myAppConfig)
+	cm.Hydrate(&myAppConfig)
 }
 ```
 This will set `myAppConfig.Port` to your `PORT` environment variable if it is set or default to `8080`

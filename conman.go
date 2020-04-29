@@ -8,7 +8,7 @@ import (
 
 // Iface ...
 type Iface interface {
-	HydrateConfig(interface{}) error
+	Hydrate(interface{}) error
 }
 
 // Conman ...
@@ -48,9 +48,9 @@ func (cm Conman) whinge(s string) {
 	}
 }
 
-// HydrateConfig - populate a config object with ssm params defined by tags.
+// Hydrate - populate a config object with ssm params defined by tags.
 // Looks for ssmConfig path from env var
-func (cm Conman) HydrateConfig(cfg interface{}) error {
+func (cm Conman) Hydrate(cfg interface{}) error {
 	defer func() {
 		if r := recover(); r != nil {
 			cm.whinge(fmt.Sprintf("Had a panic: %s", r))
