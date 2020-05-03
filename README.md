@@ -17,15 +17,10 @@ var myAppConfig struct {
 }
 
 func init() {
-	cm, _ := conman.New(c)
+	cm, _ := conman.New()
 	cm.Hydrate(&myAppConfig)
 }
 ```
 This will set `myAppConfig.Port` to your `PORT` environment variable if it is set or default to `8080`
 
-### Coming soon
-* AWS SSM Params
-* Custom strategies
-
-
-Uses `reflect` so watch out
+This package uses `reflect` so watch out
