@@ -30,7 +30,10 @@ func EnvironmentStrategy(in string) (*string, error) {
 
 // SSMStrategy gets the value stored in the SSM Parameter "in"
 func SSMStrategy(in string) (*string, error) {
-	awsCfg, _ := external.LoadDefaultAWSConfig()
+	awsCfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		return nil, err
+	}
 	ssmClient := ssm.New(awsCfg)
 	input := ssm.GetParameterInput{
 		Name:           aws.String(in),

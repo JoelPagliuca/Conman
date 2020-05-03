@@ -6,11 +6,6 @@ import (
 	"reflect"
 )
 
-// Hydrater ...
-type Hydrater interface {
-	Hydrate(interface{}) error
-}
-
 // Conman ...
 type Conman struct {
 	logInfo bool
