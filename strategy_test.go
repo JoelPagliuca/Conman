@@ -41,8 +41,34 @@ func TestEnvironmentStrategy(t *testing.T) {
 
 func TestEnvironmentStrategy_errors(t *testing.T) {
 	cm, _ := New()
+	os.Unsetenv("notset")
 	var toHydrate struct {
-		Token1 string `cmenv:"not-set"`
+		Token1 string `cmenv:"notset"`
+	}
+	err := cm.Hydrate(&toHydrate)
+	if err == nil {
+		t.Errorf("Hydrate should have errored but didn't")
+	}
+}
+
+func TestSSMStrategy(t *testing.T) {
+	cm, _ := New()
+	var toHydrate struct {
+		Token1 string `cmssm:"/conman/test/value1"`
+	}
+	err := cm.Hydrate(&toHydrate)
+	if err != nil {
+		t.Errorf("Hydrate Failed: %s", err.Error())
+	}
+	if toHydrate.Token1 != "ssm-test" {
+		t.Errorf("cmssm strategy failed, got %s", toHydrate.Token1)
+	}
+}
+
+func TestSSMStrategy_errors(t *testing.T) {
+	cm, _ := New()
+	var toHydrate struct {
+		Token1 string `cmssm:"notset"`
 	}
 	err := cm.Hydrate(&toHydrate)
 	if err == nil {

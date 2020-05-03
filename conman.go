@@ -23,14 +23,9 @@ type Conman struct {
 func New(opts ...Option) (*Conman, error) {
 	cm := Conman{}
 	cm.strategies = make(map[string]Strategy)
-	cm.strategies[TagDefault] = DefaultStrategy
-	cm.strategies[TagEnvironment] = EnvironmentStrategy
-	cm.strategies[TagSSM] = SSMStrategy
-	cm.order = []string{
-		TagEnvironment,
-		TagSSM,
-		TagDefault,
-	}
+	AddStrategy(TagDefault, DefaultStrategy)(&cm)
+	AddStrategy(TagSSM, SSMStrategy)(&cm)
+	AddStrategy(TagEnvironment, EnvironmentStrategy)(&cm)
 	for _, o := range opts {
 		err := o(&cm)
 		if err != nil {
