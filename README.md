@@ -17,7 +17,6 @@ var myAppConfig struct {
 }
 
 func init() {
-	c := conman.DefaultCfg
 	cm, _ := conman.New(c)
 	cm.Hydrate(&myAppConfig)
 }

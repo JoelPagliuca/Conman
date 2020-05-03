@@ -6,38 +6,42 @@ import (
 	"reflect"
 )
 
-// Iface ...
-type Iface interface {
+// Hydrater ...
+type Hydrater interface {
 	Hydrate(interface{}) error
 }
 
 // Conman ...
 type Conman struct {
-	cfg        Cfg
+	logInfo bool
+	// Order to check for config values in
+	order      []string
 	strategies map[string]Strategy
 }
 
-// New ...
-func New(c Cfg) (Iface, error) {
-	cm := Conman{cfg: c}
+// New sets the defaults then applies all the options
+func New(opts ...Option) (*Conman, error) {
+	cm := Conman{}
 	cm.strategies = make(map[string]Strategy)
-	cm.strategies[SourceDefault] = DefaultStrategy
-	cm.strategies[SourceEnvironment] = EnvironmentStrategy
-	// make sure the given config was safe
-	for _, ord := range c.SourceOrder {
-		if _, ok := cm.strategies[ord]; !ok {
-			return nil, fmt.Errorf("Value " + ord + " from SourceOrder doesn't have corresponding strategy")
-		}
+	cm.strategies[TagDefault] = DefaultStrategy
+	cm.strategies[TagEnvironment] = EnvironmentStrategy
+	cm.strategies[TagSSM] = SSMStrategy
+	cm.order = []string{
+		TagEnvironment,
+		TagSSM,
+		TagDefault,
 	}
-	if len(c.SourceOrder) == 0 {
-		cm.inform("Using the default ordering")
-		cm.cfg.SourceOrder = DefaultCfg.SourceOrder
+	for _, o := range opts {
+		err := o(&cm)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &cm, nil
 }
 
 func (cm Conman) inform(s string) {
-	if cm.cfg.LogInfo {
+	if cm.logInfo {
 		log.Println(s)
 	}
 }
@@ -63,7 +67,7 @@ func (cm Conman) Hydrate(cfg interface{}) error {
 			continue
 		}
 		var finalError error
-		for _, src := range cm.cfg.SourceOrder {
+		for _, src := range cm.order {
 			tag := fld.Tag.Get(src)
 			if tag == "" {
 				continue

@@ -6,7 +6,7 @@ import (
 )
 
 func TestDefaultStrategy(t *testing.T) {
-	cm, _ := New(DefaultCfg)
+	cm, _ := New()
 	var toHydrate struct {
 		Token1     string `cmdefault:"default"`
 		OtherToken string
@@ -24,7 +24,7 @@ func TestDefaultStrategy(t *testing.T) {
 }
 
 func TestEnvironmentStrategy(t *testing.T) {
-	cm, _ := New(DefaultCfg)
+	cm, _ := New()
 	os.Setenv("token1", "token1value")
 	defer os.Unsetenv("token1")
 	var toHydrate struct {
@@ -40,7 +40,7 @@ func TestEnvironmentStrategy(t *testing.T) {
 }
 
 func TestEnvironmentStrategy_errors(t *testing.T) {
-	cm, _ := New(DefaultCfg)
+	cm, _ := New()
 	var toHydrate struct {
 		Token1 string `cmenv:"not-set"`
 	}
@@ -51,7 +51,7 @@ func TestEnvironmentStrategy_errors(t *testing.T) {
 }
 
 func TestStrategyOrdering(t *testing.T) {
-	cm, _ := New(Cfg{SourceOrder: []string{SourceEnvironment, SourceDefault}})
+	cm, _ := New(SetOrder(TagEnvironment, TagDefault))
 	var toHydrate struct {
 		Token1 string `cmenv:"token1" cmdefault:"default"`
 	}
