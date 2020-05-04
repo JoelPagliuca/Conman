@@ -13,7 +13,7 @@
 import "github.com/JoelPagliuca/conman"
 
 var myAppConfig struct {
-	Port string `cmenv:"PORT" cmdefault:"8080"`
+	Port string `cmssm:"/Prod/app/port" cmenv:"PORT" cmdefault:"8080"`
 }
 
 func init() {
@@ -21,6 +21,9 @@ func init() {
 	cm.Hydrate(&myAppConfig)
 }
 ```
-This will set `myAppConfig.Port` to your `PORT` environment variable if it is set or default to `8080`
+This will try to set `myAppConfig.Port` to:
+* your `PORT` environment variable if it is set
+* your AWS SSM Parameter value set in `/Prod/app/port`
+* then default to `8080`
 
-This package uses `reflect` so watch out
+Check the [godoc](http://godoc.org/github.com/JoelPagliuca/conman) for more

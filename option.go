@@ -33,9 +33,11 @@ func SetOrder(src ...string) Option {
 }
 
 // EnableLogging - Log kinda interesting info
-func EnableLogging(cm *Conman) error {
-	cm.logInfo = true
-	return nil
+func EnableLogging() Option {
+	return func(cm *Conman) error {
+		cm.logInfo = true
+		return nil
+	}
 }
 
 // AddAWSConfig add your own AWS config to Conman if you don't want default

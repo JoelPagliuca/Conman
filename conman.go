@@ -1,3 +1,5 @@
+// Package conman aims to make your config setup less verbose.
+// this package uses `reflect` so watch out
 package conman
 
 import (
