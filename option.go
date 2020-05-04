@@ -1,10 +1,14 @@
 package conman
 
+import (
+	"github.com/aws/aws-sdk-go-v2/aws"
+)
+
 // Tags for the Hydrater to look for
 const (
 	TagEnvironment = "cmenv"
-	TagDefault     = "cmdefault"
 	TagSSM         = "cmssm"
+	TagDefault     = "cmdefault"
 )
 
 // Option applies some sort of option to a Conman
@@ -32,4 +36,12 @@ func SetOrder(src ...string) Option {
 func EnableLogging(cm *Conman) error {
 	cm.logInfo = true
 	return nil
+}
+
+// AddAWSConfig add your own AWS config to Conman if you don't want default
+func AddAWSConfig(c *aws.Config) Option {
+	return func(cm *Conman) error {
+		cm.awsConfig = c
+		return nil
+	}
 }

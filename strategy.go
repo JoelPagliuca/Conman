@@ -6,21 +6,21 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-
 	"github.com/aws/aws-sdk-go-v2/aws/external"
+
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
 // Strategy iface for a config getting func
-type Strategy func(string) (*string, error)
+type Strategy func(*Conman, string) (*string, error)
 
 // DefaultStrategy sets the default defined by "in"
-func DefaultStrategy(in string) (*string, error) {
+func DefaultStrategy(cm *Conman, in string) (*string, error) {
 	return &in, nil
 }
 
 // EnvironmentStrategy gets the value of the environment variable "in"
-func EnvironmentStrategy(in string) (*string, error) {
+func EnvironmentStrategy(cm *Conman, in string) (*string, error) {
 	val, ok := os.LookupEnv(in)
 	if ok {
 		return &val, nil
@@ -29,12 +29,16 @@ func EnvironmentStrategy(in string) (*string, error) {
 }
 
 // SSMStrategy gets the value stored in the SSM Parameter "in"
-func SSMStrategy(in string) (*string, error) {
-	awsCfg, err := external.LoadDefaultAWSConfig()
-	if err != nil {
-		return nil, err
+func SSMStrategy(cm *Conman, in string) (*string, error) {
+	if cm.awsConfig == nil {
+		a, err := external.LoadDefaultAWSConfig()
+		cm.awsConfig = &a
+		if err != nil {
+			return nil, err
+		}
+		cm.inform("Getting default AWS config")
 	}
-	ssmClient := ssm.New(awsCfg)
+	ssmClient := ssm.New(*cm.awsConfig)
 	input := ssm.GetParameterInput{
 		Name:           aws.String(in),
 		WithDecryption: aws.Bool(true),

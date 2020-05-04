@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
 )
 
 // Conman ...
@@ -12,6 +14,7 @@ type Conman struct {
 	// Order to check for config values in
 	order      []string
 	strategies map[string]Strategy
+	awsConfig  *aws.Config
 }
 
 // New sets the defaults then applies all the options
@@ -38,7 +41,7 @@ func (cm Conman) inform(s string) {
 
 // Hydrate - populate a config object with ssm params defined by tags.
 // Looks for ssmConfig path from env var
-func (cm Conman) Hydrate(cfg interface{}) error {
+func (cm *Conman) Hydrate(cfg interface{}) error {
 	defer func() {
 		if r := recover(); r != nil {
 			cm.inform(fmt.Sprintf("Had a panic: %s", r))
@@ -62,7 +65,7 @@ func (cm Conman) Hydrate(cfg interface{}) error {
 			if tag == "" {
 				continue
 			} else {
-				sub, err := cm.strategies[src](tag)
+				sub, err := cm.strategies[src](cm, tag)
 				if sub != nil {
 					cm.inform("Setting " + fld.Name + " using " + src)
 					val.SetString(*sub)

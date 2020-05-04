@@ -3,6 +3,8 @@ package conman
 import (
 	"os"
 	"testing"
+
+	"github.com/aws/aws-sdk-go-v2/aws/external"
 )
 
 func TestDefaultStrategy(t *testing.T) {
@@ -53,6 +55,9 @@ func TestEnvironmentStrategy_errors(t *testing.T) {
 
 func TestSSMStrategy(t *testing.T) {
 	cm, _ := New()
+	if cm.awsConfig != nil {
+		t.Errorf("Conman shouldn't have an aws config")
+	}
 	var toHydrate struct {
 		Token1 string `cmssm:"/conman/test/value1"`
 	}
@@ -62,6 +67,30 @@ func TestSSMStrategy(t *testing.T) {
 	}
 	if toHydrate.Token1 != "ssm-test" {
 		t.Errorf("cmssm strategy failed, got %s", toHydrate.Token1)
+	}
+	if cm.awsConfig == nil {
+		t.Errorf("Conman should now have an aws config")
+	}
+}
+
+func TestSSMStrategyWithConfig(t *testing.T) {
+	a, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		t.Errorf("Hydrate Failed: %s", err.Error())
+	}
+	cm, _ := New(AddAWSConfig(&a))
+	if cm.awsConfig != &a {
+		t.Errorf("Conman should have been given the aws config")
+	}
+	var toHydrate struct {
+		Token1 string `cmssm:"/conman/test/value1"`
+	}
+	err = cm.Hydrate(&toHydrate)
+	if err != nil {
+		t.Errorf("Hydrate Failed: %s", err.Error())
+	}
+	if cm.awsConfig != &a {
+		t.Errorf("Conman should still have the aws config")
 	}
 }
 
