@@ -6,8 +6,8 @@ import (
 
 // A normal use case. Will set myAppConfig.Port to:
 // 	* your PORT environment variable if it is set
-// 	* your AWS SSM Parameter value set in `/Prod/app/port`
-// 	* then default to `8080`
+// 	* your AWS SSM Parameter value set in /Prod/app/port
+// 	* then default to 8080
 func Example() {
 	var myAppConfig struct {
 		Port string `cmssm:"/Prod/app/port" cmenv:"PORT" cmdefault:"8080"`
