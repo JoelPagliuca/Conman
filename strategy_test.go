@@ -53,6 +53,22 @@ func TestEnvironmentStrategy_errors(t *testing.T) {
 	}
 }
 
+func TestEnvironmentStrategy_prefix(t *testing.T) {
+	cm, _ := New(SetEnvPrefix("TEST_"))
+	os.Setenv("TEST_token1", "token1value")
+	defer os.Unsetenv("_TEST_token1")
+	var toHydrate struct {
+		Token1 string `cmenv:"token1"`
+	}
+	err := cm.Hydrate(&toHydrate)
+	if err != nil {
+		t.Errorf("Hydrate Failed: %s", err.Error())
+	}
+	if toHydrate.Token1 != "token1value" {
+		t.Errorf("cmenv strategy failed, got %s", toHydrate.Token1)
+	}
+}
+
 func TestSSMStrategy(t *testing.T) {
 	cm, _ := New()
 	if cm.awsConfig != nil {
@@ -70,6 +86,20 @@ func TestSSMStrategy(t *testing.T) {
 	}
 	if cm.awsConfig == nil {
 		t.Errorf("Conman should now have an aws config")
+	}
+}
+
+func TestSSMStrategy_prefix(t *testing.T) {
+	cm, _ := New(SetSSMPrefix("/conman"))
+	var toHydrate struct {
+		Token1 string `cmssm:"/test/value1"`
+	}
+	err := cm.Hydrate(&toHydrate)
+	if err != nil {
+		t.Errorf("Hydrate Failed: %s", err.Error())
+	}
+	if toHydrate.Token1 != "ssm-test" {
+		t.Errorf("cmssm strategy failed, got %s", toHydrate.Token1)
 	}
 }
 

@@ -21,7 +21,7 @@ func DefaultStrategy(cm *Conman, in string) (*string, error) {
 
 // EnvironmentStrategy gets the value of the environment variable "in"
 func EnvironmentStrategy(cm *Conman, in string) (*string, error) {
-	val, ok := os.LookupEnv(in)
+	val, ok := os.LookupEnv(cm.envPrefix + in)
 	if ok {
 		return &val, nil
 	}
@@ -40,7 +40,7 @@ func SSMStrategy(cm *Conman, in string) (*string, error) {
 	}
 	ssmClient := ssm.New(*cm.awsConfig)
 	input := ssm.GetParameterInput{
-		Name:           aws.String(in),
+		Name:           aws.String(cm.ssmPrefix + in),
 		WithDecryption: aws.Bool(true),
 	}
 	req := ssmClient.GetParameterRequest(&input)
