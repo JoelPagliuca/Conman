@@ -19,6 +19,10 @@ func Example() {
 
 func Example_options() {
 	conman.New(
+		// Use APP_ as a prefix for all env values
+		conman.SetEnvPrefix("APP_"),
+		// Use /app-name as a prefix for all ssm names
+		conman.SetSSMPrefix("/app-name"),
 		// Change the ordering conman tries to load config values
 		conman.SetOrder(conman.TagSSM, conman.TagEnvironment),
 		// Help find out why your config wasn't loaded Properly

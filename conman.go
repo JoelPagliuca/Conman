@@ -13,11 +13,12 @@ import (
 
 // Conman ...
 type Conman struct {
-	logInfo bool
-	// Order to check for config values in
+	logInfo    bool
 	order      []string
 	strategies map[string]Strategy
 	awsConfig  *aws.Config
+	envPrefix  string
+	ssmPrefix  string
 }
 
 // New sets the defaults then applies all the options

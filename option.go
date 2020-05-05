@@ -47,3 +47,19 @@ func AddAWSConfig(c *aws.Config) Option {
 		return nil
 	}
 }
+
+// SetEnvPrefix - Hydrate will use p as a prefix for all env values
+func SetEnvPrefix(p string) Option {
+	return func(cm *Conman) error {
+		cm.envPrefix = p
+		return nil
+	}
+}
+
+// SetSSMPrefix - Hydrate will use p as a prefix for all ssm names
+func SetSSMPrefix(p string) Option {
+	return func(cm *Conman) error {
+		cm.ssmPrefix = p
+		return nil
+	}
+}
