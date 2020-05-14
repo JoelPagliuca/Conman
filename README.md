@@ -26,3 +26,5 @@ This will try to set `myAppConfig.Port` to:
 * then default to `8080`
 
 Check the [godoc](http://godoc.org/github.com/JoelPagliuca/conman) for more
+
+Shout out to my boy Marcus for the project name ❤️
