@@ -8,6 +8,9 @@ import (
 // 	* your PORT environment variable if it is set
 // 	* your AWS SSM Parameter value set in /Prod/app/port
 // 	* then default to 8080
+//
+// Make sure your config fields are Exported
+// reflect can't set private fields ¯\_(ツ)_/¯
 func Example() {
 	var myAppConfig struct {
 		Port string `cmssm:"/Prod/app/port" cmenv:"PORT" cmdefault:"8080"`
