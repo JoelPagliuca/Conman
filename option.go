@@ -1,13 +1,8 @@
 package conman
 
-import (
-	"github.com/aws/aws-sdk-go-v2/aws"
-)
-
 // Tags for the Hydrater to look for
 const (
 	TagEnvironment = "cmenv"
-	TagSSM         = "cmssm"
 	TagDefault     = "cmdefault"
 )
 
@@ -40,26 +35,10 @@ func EnableLogging() Option {
 	}
 }
 
-// AddAWSConfig add your own AWS config to Conman if you don't want default
-func AddAWSConfig(c *aws.Config) Option {
-	return func(cm *Conman) error {
-		cm.awsConfig = c
-		return nil
-	}
-}
-
 // SetEnvPrefix - Hydrate will use p as a prefix for all env values
 func SetEnvPrefix(p string) Option {
 	return func(cm *Conman) error {
 		cm.envPrefix = p
-		return nil
-	}
-}
-
-// SetSSMPrefix - Hydrate will use p as a prefix for all ssm names
-func SetSSMPrefix(p string) Option {
-	return func(cm *Conman) error {
-		cm.ssmPrefix = p
 		return nil
 	}
 }

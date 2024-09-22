@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"log"
 	"reflect"
-
-	"github.com/aws/aws-sdk-go-v2/aws"
 )
 
 // Conman ...
@@ -16,9 +14,7 @@ type Conman struct {
 	logInfo    bool
 	order      []string
 	strategies map[string]Strategy
-	awsConfig  *aws.Config
 	envPrefix  string
-	ssmPrefix  string
 }
 
 // New sets the defaults then applies all the options
@@ -26,7 +22,6 @@ func New(opts ...Option) (*Conman, error) {
 	cm := Conman{}
 	cm.strategies = make(map[string]Strategy)
 	AddStrategy(TagDefault, DefaultStrategy)(&cm)
-	AddStrategy(TagSSM, SSMStrategy)(&cm)
 	AddStrategy(TagEnvironment, EnvironmentStrategy)(&cm)
 	for _, o := range opts {
 		err := o(&cm)
@@ -43,8 +38,7 @@ func (cm Conman) inform(s string) {
 	}
 }
 
-// Hydrate - populate a config object with ssm params defined by tags.
-// Looks for ssmConfig path from env var
+// Hydrate - populate a config object with params defined by tags.
 func (cm *Conman) Hydrate(cfg interface{}) error {
 	defer func() {
 		if r := recover(); r != nil {
